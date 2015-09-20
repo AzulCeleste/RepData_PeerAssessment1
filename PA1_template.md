@@ -6,7 +6,8 @@ output:
 ---
 
 ## Loading and preprocessing the data
-```{r echo=TRUE}
+
+```r
 setwd("C:/Users/210067772/Coursera/data")
 data<- read.csv("activity.csv", colClasses=c("numeric", "character", "numeric"))
 ```
@@ -17,7 +18,8 @@ Let's ignore the missing values in the dataset.
 
 1. Histogram of the total number of steps taken each day
 
-```{r echo=TRUE}
+
+```r
 total.steps <- tapply(data$steps, data$date, FUN=sum, na.rm=TRUE)
 
 hist(total.steps, 
@@ -33,19 +35,34 @@ hist(total.steps,
      )
 ```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
+
 2. Calculate and report the mean and median total number of steps taken per day
 
 
-```{r echo=TRUE}
+
+```r
 mean(total.steps)
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 median(total.steps)
+```
+
+```
+## [1] 10395
 ```
 
 ## What is the average daily activity pattern?
 
 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
 
-```{r echo=TRUE}
+
+```r
 av.steps <- aggregate(x = data$steps, by = list(data$interval), FUN = "mean", na.rm=TRUE)
 names(av.steps) <- c("Interval", "Average")
 plot(av.steps$Interval,
@@ -57,22 +74,32 @@ plot(av.steps$Interval,
      main="Time-series of the average number of steps per intervals\n(NA removed)")
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r echo=TRUE}
+
+```r
 av.steps[which.max(av.steps$Average),] 
+```
+
+```
+##     Interval  Average
+## 104      835 206.1698
 ```
 ## Imputing missing values
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r echo=TRUE}
+
+```r
 count.NA <- sum(is.na(data$steps)) #2304
 ```
 2. Devise a strategy for filling in all of the missing values in the dataset. I decided to use the mean of the sample.
 
 
-```{r echo=TRUE}
+
+```r
 # Find the NA positions
 pos.NA <- which(is.na(data$steps))
 
@@ -82,13 +109,15 @@ fill.NA <- rep(mean(data$steps, na.rm=TRUE), times=length(pos.NA))
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r echo=TRUE}
+
+```r
 data[pos.NA, "steps"] <- fill.NA
 ```
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.
 
-```{r echo=TRUE}
+
+```r
 new.total.steps <- tapply(data$steps, data$date, FUN=sum, na.rm=TRUE)
 hist(new.total.steps, 
      main="Histogram of the Total Number of Steps taken per day\n (NA replaced by the mean of the sample)", 
@@ -101,9 +130,24 @@ hist(new.total.steps,
      las=1, 
      breaks=seq(from=0, to=25000, by=2500)
 )
+```
 
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+
+```r
 mean(new.total.steps) #10766.19
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(new.total.steps) #10766.19
+```
+
+```
+## [1] 10766.19
 ```
 
 
