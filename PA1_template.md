@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 ## Loading and preprocessing the data
 
@@ -35,7 +30,7 @@ hist(total.steps,
      )
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 2. Calculate and report the mean and median total number of steps taken per day
 
@@ -74,7 +69,7 @@ plot(av.steps$Interval,
      main="Time-series of the average number of steps per intervals\n(NA removed)")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -114,7 +109,7 @@ fill.NA <- rep(mean(data$steps, na.rm=TRUE), times=length(pos.NA))
 data[pos.NA, "steps"] <- fill.NA
 ```
 
-4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.
+4. Make a histogram of the total number of steps taken each day and calculate and report the mean and median total number of steps taken per day.
 
 
 ```r
@@ -132,7 +127,7 @@ hist(new.total.steps,
 )
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
 
 ```r
 mean(new.total.steps) #10766.19
@@ -152,9 +147,48 @@ median(new.total.steps) #10766.19
 
 
 
-
-
 ## Are there differences in activity patterns between weekdays and weekends?
 
+1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+
+```r
+data$weekday <- weekdays(as.Date(data$date))
+
+daytype <- function(date) {
+    if (date %in% c("Saturday", "Sunday")) {
+        "weekend"
+    } else {
+        "weekday"
+    }
+}
+data$daytype <- as.factor(sapply(data$weekday, daytype))
+```
+
+2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+
+
+```r
+steps.weekday <- aggregate(steps ~ interval, data, subset = data$daytype == "weekday", FUN = mean)
+steps.weekend <- aggregate(steps ~ interval, data, subset = data$daytype == "weekend", FUN = mean)
+
+par(mfrow = c(2,1), mar = c(4,4,4,4))
+
+plot(steps.weekday, 
+     type = "l", 
+     col = "blue",
+     xlab = "Interval (min)", 
+     ylab = "Steps",
+     main="Weekday")
+
+plot(steps.weekend, 
+     type = "l", 
+     col = "blue",
+     xlab = "Interval (min)", 
+     ylab = "Steps",
+     main="Weekend")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
 
 
